@@ -1,0 +1,129 @@
+body {
+    background-color: #030712;
+    color: #f8fafc;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+}
+
+/* 🇦🇲 ԻՐԱԿԱՆ ՀԱՅԿԱԿԱՆ ՍՏԱՆԴԱՐՏԻ ՀԱՄԱՐԱՆԻՇ */
+.license-plate {
+    background: linear-gradient(to bottom, #ffffff, #f1f5f9);
+    border: 4px solid #475569;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    max-width: 480px;
+}
+
+/* 🌀 Հասարակ պտտվող անիմացիա */
+@keyframes slotSpin {
+    0% { transform: scale(1) translateY(0); filter: blur(0px); }
+    30% { transform: scale(1.06) translateY(-2px); filter: blur(2px); opacity: 0.7; }
+    70% { transform: scale(1.02) translateY(2px); filter: blur(1px); opacity: 0.85; }
+    100% { transform: scale(1) translateY(0); filter: blur(0px); opacity: 1; }
+}
+
+.spinning-animation {
+    animation: slotSpin 0.12s infinite ease-in-out;
+}
+
+/* 💥 ՀԶՈՐ ՍՊԻՏԱԿ ՖՊԻՇԿԱ (ԲՌՆԿՈՒՄ) */
+@keyframes bigFlash {
+    0% { background-color: #ffffff; transform: scale(1.1); filter: brightness(3.5); box-shadow: 0 0 60px #ffffff; }
+    100% { background-color: #ffffff; transform: scale(1); filter: brightness(1); }
+}
+
+.plate-big-flash {
+    animation: bigFlash 0.4s ease-out;
+}
+
+/* 🌈 ՄԱՐԳԱՏ ԱՆԻՄԱՑԻԱ */
+@keyframes rainbowRainbow {
+    0% { border-color: #3b82f6; box-shadow: 0 0 25px #3b82f6; }
+    25% { border-color: #a855f7; box-shadow: 0 0 35px #a855f7; }
+    50% { border-color: #f43f5e; box-shadow: 0 0 45px #f43f5e; }
+    75% { border-color: #06b6d4; box-shadow: 0 0 35px #06b6d4; }
+    100% { border-color: #fbbf24; box-shadow: 0 0 50px #fbbf24, inset 0 0 20px rgba(251,191,36,0.8); }
+}
+
+.plate-rainbow-phase {
+    animation: rainbowRainbow 1.2s ease-in-out;
+}
+
+/* ՀԱԶՎԱԴԵՊՈՒԹՅԱՆ ՆԵՈՆԱՅԻՆ ՇՐՋԱՆԱԿՆԵՐ */
+.plate-legendary {
+    border-color: #fbbf24 !important;
+    box-shadow: 0 0 35px rgba(251, 191, 36, 0.9), inset 0 0 15px rgba(251, 191, 36, 0.5) !important;
+}
+
+.plate-mythic {
+    border-color: #f43f5e !important;
+    box-shadow: 0 0 30px rgba(244, 63, 94, 0.8), inset 0 0 12px rgba(244, 63, 94, 0.4) !important;
+}
+
+.plate-epic {
+    border-color: #a855f7 !important;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.7), inset 0 0 10px rgba(168, 85, 247, 0.3) !important;
+}
+
+.plate-rare {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6) !important;
+}
+
+.plate-common {
+    border-color: #475569 !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 📱 ՄԵԴԻԱ ՀԱՐՑՈՒՄՆԵՐ ՀԵՌԱԽՈՍՆԵՐԻ ՀԱՄԱՐ (RESPONSIVE) */
+
+@media (max-width: 640px) {
+    /* Փոքր էկրանների վրա համարանիշի տառերի չափսը հարմարեցնում ենք, որ չկտրվի */
+    #numberSlot {
+        font-size: 2.2rem !important;
+        letter-spacing: 0.12em !important;
+    }
+    
+    .license-plate {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+        border-width: 3px !important;
+    }
+
+    /* Վերևի մենյուի կոճակների հարմարեցում */
+    header .max-w-4xl {
+        gap: 0.5rem !important;
+    }
+
+    /* Ֆրցնելու կոճակի հարմարեցում փոքր էկրանին */
+    #spinBtn {
+        width: 100%;
+        justify-content: center;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 380px) {
+    #numberSlot {
+        font-size: 1.8rem !important;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+::-webkit-scrollbar-track {
+    background: #030712;
+}
+::-webkit-scrollbar-thumb {
+    background: #2563eb;
+    border-radius: 3px;
+}
