@@ -34,10 +34,10 @@ function saveGame() {
 
 function initShop() {
     shopNumbers = [
-        { number: "99 LL 999", price: 30000000, seller: "Համարների Թագավոր", rarity: "legendary", reason: "👑 3 հատ 9-անոց (Հնարավոր լավագույնս)" },
-        { number: "01 OO 001", price: 5000000, seller: "VIP Մագազին", rarity: "mythic", reason: "🔥 Հայելային համար (001)" },
-        { number: "43 SS 777", price: 2000000, seller: "Անհայտ Միլիարդատեր", rarity: "epic", reason: "💎 Բլատնոյ տառեր ու 777" },
-        { number: "61 VV 555", price: 500000, seller: "Երևանյան Ցանց", rarity: "rare", reason: "⭐ Զույգ տառեր և 555" }
+        { number: "77 LL 777", price: 50000000, seller: "Համարների Թագավոր", rarity: "legendary", reason: "👑 Լեգենդար եռակի համար (777)" },
+        { number: "01 OO 001", price: 4500000, seller: "VIP Մագազին", rarity: "mythic", reason: "🔥 Միֆիկական հայելային համար" },
+        { number: "43 SS 333", price: 1500000, seller: "Անհայտ Միլիարդատեր", rarity: "epic", reason: "💎 Էպիկական բլատնոյ շարք" },
+        { number: "61 VV 555", price: 300000, seller: "Երևանյան Ցանց", rarity: "rare", reason: "⭐ Հազվադեպ զույգ համար" }
     ];
 }
 initShop();
@@ -64,7 +64,7 @@ function switchTab(tabId) {
     if (tabId === 'temporary') renderTemporaryNumbers();
 }
 
-// 🇦🇲 ՀԱՄԱՐԻ ՍԻՐՈՒՆՈՒԹՅԱՆ ԵՎ ԳՆԱՀԱՏՄԱՆ ՃՇԳՐԻՏ ԼՈԳԻԿԱ
+// 🇦🇲 ՀԱՄԱՐԻ ՍԻՐՈՒՆՈՒԹՅԱՆ ԵՎ ՃՇԳՐԻՏ ԳՆԵՐԻ ԼՈԳԻԿԱ
 function evaluatePlate(numberStr, letters) {
     const parts = numberStr.split(" ");
     const digits = parts[2]; // Օրինակ՝ "777" կամ "421"
@@ -72,49 +72,52 @@ function evaluatePlate(numberStr, letters) {
     const isAllEqual = digits[0] === digits[1] && digits[1] === digits[2]; // 777, 000, 111
     const isMirror = digits[0] === digits[2] && digits[0] !== digits[1]; // 707, 515
     const isDouble = digits[0] === digits[1] || digits[1] === digits[2] || digits[0] === digits[2]; // 077, 551
-    const endsWithZero = digits.endsWith("00"); // 500, 100
     const isSpecialLetters = letters === "OO" || letters === "LL" || letters === "SS" || letters === "QQ";
 
-    // 👑 LEGENDARY (30 Մլն) - Երբ 3 թվերն էլ իրար հավասար են (777, 000 և այլն)
+    // 👑 LEGENDARY (10 մլն - 100 մլն ֏)
     if (isAllEqual) {
+        const randomLegendaryPrice = Math.floor(Math.random() * 90000000) + 10000000;
         return {
-            price: 30000000,
+            price: randomLegendaryPrice,
             rarity: "legendary",
             reason: `👑 Լեգենդար՝ 3 հատ իրար հավասար թիվ (${digits})`
         };
     }
 
-    // 🔥 MYTHIC (5 Մլն) - Հայելային են կամ զրոներով վերջացող + բլատնոյ տառեր
-    if (isMirror || (endsWithZero && isSpecialLetters)) {
+    // 🔥 MYTHIC (700 հազ - 9 մլն ֏)
+    if (isMirror || (endsWithZero = digits.endsWith("00"), endsWithZero && isSpecialLetters)) {
+        const randomMythicPrice = Math.floor(Math.random() * 8300000) + 700000;
         return {
-            price: 5000000,
+            price: randomMythicPrice,
             rarity: "mythic",
-            reason: `🔥 Միֆիկական՝ ${isMirror ? 'Հայելային թվեր' : 'Զրոներով հավաքած'} (${digits} / ${letters})`
+            reason: `🔥 Միֆիկական՝ Հայելային կամ բլատնոյ կոդ (${digits} / ${letters})`
         };
     }
 
-    // 💜 EPIC (2 Մլն) - Երկու նույն թիվ կամ հատուկ տառային համադրություն
+    // 💎 EPIC (500 հազ - 1 մլն ֏)
     if (isDouble && isSpecialLetters) {
+        const randomEpicPrice = Math.floor(Math.random() * 500000) + 500000;
         return {
-            price: 2000000,
+            price: randomEpicPrice,
             rarity: "epic",
             reason: `💎 Էպիկական՝ Զույգ թվեր (${digits}) + Բլատնոյ տառեր (${letters})`
         };
     }
 
-    // 💙 RARE (500 Հազար) - Պարզապես զույգ կամ հետաքրքիր թվեր
+    // ⭐ RARE (100 հազ - 500 հազ ֏)
     if (isDouble) {
+        const randomRarePrice = Math.floor(Math.random() * 400000) + 100000;
         return {
-            price: 500000,
+            price: randomRarePrice,
             rarity: "rare",
             reason: `⭐ Հազվադեպ՝ Զույգ թվեր (${digits})`
         };
     }
 
-    // ⚪ COMMON (5,000 - 20,000 ֏) - Սովորական խառը համարներ
-    const randomPrice = Math.floor(Math.random() * 15000) + 5000;
+    // ⚪ COMMON (5,000 - 20,000 ֏)
+    const randomCommonPrice = Math.floor(Math.random() * 15000) + 5000;
     return {
-        price: randomPrice,
+        price: randomCommonPrice,
         rarity: "common",
         reason: `⚪ Սովորական խառը համար (${digits})`
     };
@@ -127,20 +130,22 @@ function generateArmenianCarNumber() {
     let num;
     const rand = Math.random();
 
-    // Շանս, որ երբեմն միանգամից սիրուն ընկնի
-    if (rand < 0.04) {
+    // 🎯 ՇԱՆՍԵՐԸ ՍԱՐՔՎԱԾ ԵՆ ՇԱՏ ՀԱԶՎԱԴԵՊ (Realistic Gacha Odds)
+    if (rand < 0.008) { // ~0.8% շանս Legendary
         const d = Math.floor(Math.random() * 9) + 1;
-        num = `${d}${d}${d}`; // Լեգենդար (777, 888...)
-    } else if (rand < 0.12) {
+        num = `${d}${d}${d}`; 
+    } else if (rand < 0.035) { // ~2.7% շանս Mythic
+        const d = Math.floor(Math.random() * 9) + 1;
+        num = `${d}0${d}`; // Հայելային
+    } else if (rand < 0.09) { // ~5.5% շանս Epic
         const d = Math.floor(Math.random() * 9) + 1;
         const other = Math.floor(Math.random() * 9);
-        num = `${d}0${d}`; // Հայելային (707)
-    } else if (rand < 0.25) {
+        num = `${d}${d}${other}`;
+    } else if (rand < 0.22) { // ~13% շանս Rare
         const d = Math.floor(Math.random() * 9) + 1;
-        const other = Math.floor(Math.random() * 9);
-        num = `${d}${d}${other}`; // Զույգ (551)
-    } else {
-        num = String(Math.floor(Math.random() * 900) + 100); // Սովորական խառը
+        num = `0${d}${d}`;
+    } else { // Մնացածը սովորական Common
+        num = String(Math.floor(Math.random() * 900) + 100);
     }
 
     const numberStr = `${region} ${l} ${num}`;
