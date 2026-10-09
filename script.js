@@ -34,10 +34,10 @@ function saveGame() {
 
 function initShop() {
     shopNumbers = [
-        { number: "99 LL 999", price: 30000000, seller: "Համարների Թագավոր", rarity: "legendary" },
-        { number: "01 OO 001", price: 5000000, seller: "VIP Մագազին", rarity: "mythic" },
-        { number: "43 SS 777", price: 2000000, seller: "Անհայտ Միլիարդատեր", rarity: "epic" },
-        { number: "61 VV 555", price: 500000, seller: "Երևանյան Ցանց", rarity: "rare" }
+        { number: "99 LL 999", price: 30000000, seller: "Համարների Թագավոր", rarity: "legendary", reason: "👑 3 հատ 9-անոց (Հնարավոր լավագույնս)" },
+        { number: "01 OO 001", price: 5000000, seller: "VIP Մագազին", rarity: "mythic", reason: "🔥 Հայելային համար (001)" },
+        { number: "43 SS 777", price: 2000000, seller: "Անհայտ Միլիարդատեր", rarity: "epic", reason: "💎 Բլատնոյ տառեր ու 777" },
+        { number: "61 VV 555", price: 500000, seller: "Երևանյան Ցանց", rarity: "rare", reason: "⭐ Զույգ տառեր և 555" }
     ];
 }
 initShop();
@@ -64,38 +64,94 @@ function switchTab(tabId) {
     if (tabId === 'temporary') renderTemporaryNumbers();
 }
 
+// 🇦🇲 ՀԱՄԱՐԻ ՍԻՐՈՒՆՈՒԹՅԱՆ ԵՎ ԳՆԱՀԱՏՄԱՆ ՃՇԳՐԻՏ ԼՈԳԻԿԱ
+function evaluatePlate(numberStr, letters) {
+    const parts = numberStr.split(" ");
+    const digits = parts[2]; // Օրինակ՝ "777" կամ "421"
+
+    const isAllEqual = digits[0] === digits[1] && digits[1] === digits[2]; // 777, 000, 111
+    const isMirror = digits[0] === digits[2] && digits[0] !== digits[1]; // 707, 515
+    const isDouble = digits[0] === digits[1] || digits[1] === digits[2] || digits[0] === digits[2]; // 077, 551
+    const endsWithZero = digits.endsWith("00"); // 500, 100
+    const isSpecialLetters = letters === "OO" || letters === "LL" || letters === "SS" || letters === "QQ";
+
+    // 👑 LEGENDARY (30 Մլն) - Երբ 3 թվերն էլ իրար հավասար են (777, 000 և այլն)
+    if (isAllEqual) {
+        return {
+            price: 30000000,
+            rarity: "legendary",
+            reason: `👑 Լեգենդար՝ 3 հատ իրար հավասար թիվ (${digits})`
+        };
+    }
+
+    // 🔥 MYTHIC (5 Մլն) - Հայելային են կամ զրոներով վերջացող + բլատնոյ տառեր
+    if (isMirror || (endsWithZero && isSpecialLetters)) {
+        return {
+            price: 5000000,
+            rarity: "mythic",
+            reason: `🔥 Միֆիկական՝ ${isMirror ? 'Հայելային թվեր' : 'Զրոներով հավաքած'} (${digits} / ${letters})`
+        };
+    }
+
+    // 💜 EPIC (2 Մլն) - Երկու նույն թիվ կամ հատուկ տառային համադրություն
+    if (isDouble && isSpecialLetters) {
+        return {
+            price: 2000000,
+            rarity: "epic",
+            reason: `💎 Էպիկական՝ Զույգ թվեր (${digits}) + Բլատնոյ տառեր (${letters})`
+        };
+    }
+
+    // 💙 RARE (500 Հազար) - Պարզապես զույգ կամ հետաքրքիր թվեր
+    if (isDouble) {
+        return {
+            price: 500000,
+            rarity: "rare",
+            reason: `⭐ Հազվադեպ՝ Զույգ թվեր (${digits})`
+        };
+    }
+
+    // ⚪ COMMON (5,000 - 20,000 ֏) - Սովորական խառը համարներ
+    const randomPrice = Math.floor(Math.random() * 15000) + 5000;
+    return {
+        price: randomPrice,
+        rarity: "common",
+        reason: `⚪ Սովորական խառը համար (${digits})`
+    };
+}
+
 function generateArmenianCarNumber() {
     const region = regionCodes[Math.floor(Math.random() * regionCodes.length)];
     const l = lettersList[Math.floor(Math.random() * lettersList.length)];
-    const num = Math.floor(Math.random() * 900) + 100;
     
-    let numberStr = `${region} ${l} ${num}`;
-    let price = 0;
-    let rarity = "common";
-
+    let num;
     const rand = Math.random();
 
-    // Սկզբնական ճկուն ու հավասարակշռված լոգիկա
-    if (rand < 0.03) {
+    // Շանս, որ երբեմն միանգամից սիրուն ընկնի
+    if (rand < 0.04) {
         const d = Math.floor(Math.random() * 9) + 1;
-        numberStr = `${region} ${l} ${d}${d}${d}`;
-        rarity = "legendary";
-        price = Math.floor(Math.random() * 15000000) + 15000000; // 15Մ - 30Մ ֏
-    } else if (rand < 0.10) {
-        rarity = "mythic";
-        price = Math.floor(Math.random() * 3000000) + 2000000; // 2Մ - 5Մ ֏
+        num = `${d}${d}${d}`; // Լեգենդար (777, 888...)
+    } else if (rand < 0.12) {
+        const d = Math.floor(Math.random() * 9) + 1;
+        const other = Math.floor(Math.random() * 9);
+        num = `${d}0${d}`; // Հայելային (707)
     } else if (rand < 0.25) {
-        rarity = "epic";
-        price = Math.floor(Math.random() * 1000000) + 1000000; // 1Մ - 2Մ ֏
-    } else if (rand < 0.55) {
-        rarity = "rare";
-        price = Math.floor(Math.random() * 300000) + 200000; // 200Հ - 500Հ ֏
+        const d = Math.floor(Math.random() * 9) + 1;
+        const other = Math.floor(Math.random() * 9);
+        num = `${d}${d}${other}`; // Զույգ (551)
     } else {
-        rarity = "common";
-        price = Math.floor(Math.random() * 15000) + 5000; // 5Հ - 20Հ ֏
+        num = String(Math.floor(Math.random() * 900) + 100); // Սովորական խառը
     }
 
-    return { number: numberStr, price, rarity };
+    const numberStr = `${region} ${l} ${num}`;
+    const evaluated = evaluatePlate(numberStr, l);
+
+    return { 
+        number: numberStr, 
+        price: evaluated.price, 
+        rarity: evaluated.rarity, 
+        reason: evaluated.reason 
+    };
 }
 
 function spinNumber() {
@@ -153,8 +209,8 @@ function spinNumber() {
                 plateBox.classList.add('plate-common');
             }
 
-            badgeEl.innerText = `Արժեքը՝ ${generated.price.toLocaleString()} ֏`;
-            badgeEl.className = "mt-4 inline-block bg-slate-800 text-slate-200 text-xs px-4 py-1.5 rounded-full font-bold border border-slate-700 shadow";
+            badgeEl.innerHTML = `💰 ${generated.price.toLocaleString()} ֏ <br><span class="text-[10px] text-amber-300">${generated.reason}</span>`;
+            badgeEl.className = "mt-4 inline-block bg-slate-800 text-slate-200 text-xs px-4 py-2 rounded-xl font-bold border border-slate-700 shadow text-center";
 
             temporaryNumbers.push(generated);
             spinCount++;
@@ -219,6 +275,7 @@ function renderShop() {
                     <div class="text-xs text-blue-400 font-bold mb-1">Վաճառող՝ ${item.seller}</div>
                     <div class="text-xl md:text-2xl font-mono font-black text-cyan-300">${item.number}</div>
                     <div class="text-xs text-emerald-400 mt-1 font-extrabold">Գինը՝ ${item.price.toLocaleString()} ֏</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">${item.reason || ''}</div>
                 </div>
                 <button onclick="buyFromShop(${index})" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold px-5 py-2.5 rounded-2xl transition shadow-lg active:scale-95">
                     Գնել
@@ -268,6 +325,7 @@ function renderTemporaryNumbers() {
                 <div>
                     <div class="text-xs text-amber-400 font-bold mb-1">Արժեքը՝ ${item.price.toLocaleString()} ֏</div>
                     <div class="text-lg md:text-xl font-mono font-extrabold text-white">${item.number}</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">${item.reason || ''}</div>
                 </div>
                 <span class="text-xs bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1.5 rounded-xl font-bold">Սեղմել</span>
             </div>
@@ -298,7 +356,7 @@ function openActionModal(index) {
     selectedTempIndex = index;
     const item = temporaryNumbers[index];
     document.getElementById('modalPlateNumber').innerText = item.number;
-    document.getElementById('modalPlatePrice').innerText = `Գինը՝ ${item.price.toLocaleString()} ֏`;
+    document.getElementById('modalPlatePrice').innerHTML = `Գինը՝ ${item.price.toLocaleString()} ֏ <br><span class="text-xs text-amber-300">${item.reason || ''}</span>`;
     
     const modal = document.getElementById('actionModal');
     modal.classList.remove('hidden');
@@ -357,6 +415,7 @@ function renderMyNumbers() {
                 <div>
                     <div class="text-xs text-cyan-400 font-bold mb-1">Արժեքը՝ ${item.price.toLocaleString()} ֏</div>
                     <div class="text-lg md:text-xl font-mono font-extrabold text-white">${item.number}</div>
+                    <div class="text-[10px] text-slate-400 mt-0.5">${item.reason || ''}</div>
                 </div>
                 <div class="flex gap-2">
                     <button onclick="sellMyNumber(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl transition shadow-md active:scale-95">
